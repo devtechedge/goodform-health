@@ -1,0 +1,229 @@
+@import "tailwindcss";
+
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+  --gf-bg: #fcf8f2;
+  --gf-surface: #fffdf9;
+  --gf-surface-muted: #f3ece1;
+  --gf-ink: #261124;
+  --gf-ink-muted: #593c55;
+  --gf-border: #e3d7c8;
+  --gf-border-strong: #c7b4a0;
+
+  --gf-aubergine: #2b1429;
+  --gf-aubergine-hover: #3d1d3a;
+  --gf-on-aubergine: #fcf8f2;
+
+  --gf-persimmon: #c8432b;
+  --gf-persimmon-hover: #ac3520;
+  --gf-on-persimmon: #fffdf9;
+  --gf-persimmon-soft: #fceae5;
+  --gf-persimmon-ink: #992c19;
+
+  --gf-lilac: #eae1f7;
+  --gf-lilac-border: #cebeeb;
+  --gf-lilac-ink: #4e3278;
+
+  --gf-verbena-soft: #e4f2eb;
+  --gf-verbena-border: #b5dcc8;
+  --gf-verbena-ink: #1d523a;
+
+  --gf-amber-soft: #fdf0d5;
+  --gf-amber-border: #e6c687;
+  --gf-amber-ink: #734304;
+
+  --gf-focus: #c8432b;
+  --gf-scroll-thumb: rgba(89, 60, 85, 0.42);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --gf-bg: #170c16;
+  --gf-surface: #231321;
+  --gf-surface-muted: #2e1a2c;
+  --gf-ink: #faf4ec;
+  --gf-ink-muted: #d4c2d1;
+  --gf-border: #3e253b;
+  --gf-border-strong: #5b3857;
+
+  --gf-aubergine: #faf4ec;
+  --gf-aubergine-hover: #e8dccd;
+  --gf-on-aubergine: #1f0e1d;
+
+  --gf-persimmon: #c8432b;
+  --gf-persimmon-hover: #b23721;
+  --gf-on-persimmon: #fffdf9;
+  --gf-persimmon-soft: #3b1a16;
+  --gf-persimmon-ink: #ffb8a8;
+
+  --gf-lilac: #2e2142;
+  --gf-lilac-border: #533d75;
+  --gf-lilac-ink: #e2d4fa;
+
+  --gf-verbena-soft: #142e23;
+  --gf-verbena-border: #2a5c46;
+  --gf-verbena-ink: #9ce3c1;
+
+  --gf-amber-soft: #36250a;
+  --gf-amber-border: #6b4b16;
+  --gf-amber-ink: #fad389;
+
+  --gf-focus: #ff8f78;
+  --gf-scroll-thumb: rgba(212, 194, 209, 0.38);
+}
+
+@theme inline {
+  --font-display: "DM Serif Display", Georgia, serif;
+  --font-sans: "Plus Jakarta Sans Variable", "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+  --font-mono: "DM Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --color-gf-bg: var(--gf-bg);
+  --color-gf-surface: var(--gf-surface);
+  --color-gf-surface-muted: var(--gf-surface-muted);
+  --color-gf-ink: var(--gf-ink);
+  --color-gf-ink-muted: var(--gf-ink-muted);
+  --color-gf-border: var(--gf-border);
+  --color-gf-border-strong: var(--gf-border-strong);
+  --color-gf-aubergine: var(--gf-aubergine);
+  --color-gf-persimmon: var(--gf-persimmon);
+  --color-gf-lilac: var(--gf-lilac);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background-color: var(--gf-bg);
+  color: var(--gf-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--gf-bg);
+  color: var(--gf-ink);
+  overflow-x: clip;
+}
+
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.015em;
+}
+
+.font-mono-label {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Focus visibility (WCAG 2.2 AA 2.4.7 / 2.4.11) */
+:focus-visible {
+  outline: 2.5px solid var(--gf-focus);
+  outline-offset: 2px;
+}
+
+/* Skip link */
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 100;
+  padding: 0.65rem 1.1rem;
+  border-radius: 0.5rem;
+  background: var(--gf-persimmon);
+  color: var(--gf-on-persimmon);
+  font-weight: 600;
+  text-decoration: none;
+  transition: top 150ms ease;
+}
+
+.skip-link:focus {
+  top: 0.75rem;
+}
+
+/* Overlay hover-reveal scrollbars on inner panes only (exclude html/body) */
+*:not(html):not(body) {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+*:not(html):not(body):hover,
+*:not(html):not(body):focus-within {
+  scrollbar-color: var(--gf-scroll-thumb) transparent;
+}
+
+*:not(html):not(body)::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*:not(html):not(body)::-webkit-scrollbar-button {
+  display: none;
+}
+
+*:not(html):not(body)::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*:not(html):not(body)::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 9999px;
+}
+
+*:not(html):not(body):hover::-webkit-scrollbar-thumb,
+*:not(html):not(body):focus-within::-webkit-scrollbar-thumb {
+  background: var(--gf-scroll-thumb);
+}
+
+/* Overflow hygiene for responsive tables and file inputs */
+.table-scroll-wrap {
+  position: relative;
+  overflow-x: auto;
+  min-width: 0;
+  max-width: 100%;
+}
+
+input[type="file"] {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Supplement Facts apothecary monograph frame */
+.supplement-facts-box {
+  border: 2px solid var(--gf-ink);
+  background: var(--gf-surface);
+  padding: 1.25rem;
+}
+
+.supplement-facts-rule-thick {
+  height: 6px;
+  background: var(--gf-ink);
+  border: 0;
+  margin: 0.5rem 0;
+}
+
+.supplement-facts-rule-thin {
+  height: 1px;
+  background: var(--gf-border-strong);
+  border: 0;
+  margin: 0.4rem 0;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
