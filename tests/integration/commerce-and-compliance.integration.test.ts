@@ -9,7 +9,7 @@ import {
 } from "@/domain/catalog/service";
 import {
   applyCouponToCart,
-  CartDomainError,
+  type CartDomainError,
   getHydratedCart,
   mergeGuestCartIntoUserCart,
   setCartItemQuantity,
@@ -17,7 +17,7 @@ import {
 import {
   createTransactionalOrder,
   getUserOrderDetail,
-  OrderDomainError,
+  type OrderDomainError,
   reorderPreviousOrderIntoCart,
 } from "@/domain/orders/service";
 import {
