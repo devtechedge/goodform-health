@@ -8,6 +8,7 @@ import React, {
   useState,
 } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
 import type { HydratedCartView } from "@/domain/cart/service";
 import { formatInrPaise } from "@/lib/india";
@@ -27,6 +28,10 @@ interface CartContextValue {
   ) => Promise<boolean>;
   setLineQuantity: (variantId: string, quantity: number) => Promise<void>;
   applyCoupon: (code: string | null) => Promise<boolean>;
+  isWishlisted: (productId: string) => boolean;
+  toggleWishlist: (
+    productId: string,
+  ) => Promise<{ ok: boolean; saved?: boolean; requiresAuth?: boolean }>;
 }
 
 const CartContext = createContext<CartContextValue | null>(null);
@@ -40,17 +45,30 @@ export function useCart(): CartContextValue {
 }
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
   const [cart, setCart] = useState<HydratedCartView | null>(null);
+  const [wishlistedIds, setWishlistedIds] = useState<ReadonlySet<string>>(
+    () => new Set(),
+  );
   const [isOpen, setIsOpen] = useState(false);
   const [isBusy, setIsBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const refreshCart = useCallback(async () => {
     try {
-      const res = await fetch("/api/cart", { cache: "no-store" });
-      if (res.ok) {
-        const data = (await res.json()) as HydratedCartView;
+      const [cartRes, wishRes] = await Promise.all([
+        fetch("/api/cart", { cache: "no-store" }),
+        fetch("/api/wishlist", { cache: "no-store" }),
+      ]);
+      if (cartRes.ok) {
+        const data = (await cartRes.json()) as HydratedCartView;
         setCart(data);
+      }
+      if (wishRes.ok) {
+        const wData = (await wishRes.json()) as {
+          items?: Array<{ id: string }>;
+        };
+        setWishlistedIds(new Set((wData.items ?? []).map((i) => i.id)));
       }
     } catch {
       // Ignore transient network errors on initial hydration.
@@ -59,11 +77,19 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/cart", { cache: "no-store" })
-      .then((res) => (res.ok ? (res.json() as Promise<HydratedCartView>) : null))
-      .then((data) => {
-        if (!cancelled && data) {
-          setCart(data);
+    Promise.all([
+      fetch("/api/cart", { cache: "no-store" }).then((r) =>
+        r.ok ? (r.json() as Promise<HydratedCartView>) : null,
+      ),
+      fetch("/api/wishlist", { cache: "no-store" }).then((r) =>
+        r.ok ? (r.json() as Promise<{ items?: Array<{ id: string }> }>) : null,
+      ),
+    ])
+      .then(([cartData, wishData]) => {
+        if (cancelled) return;
+        if (cartData) setCart(cartData);
+        if (wishData?.items) {
+          setWishlistedIds(new Set(wishData.items.map((i) => i.id)));
         }
       })
       .catch(() => {
@@ -176,6 +202,37 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  const isWishlisted = useCallback(
+    (productId: string) => wishlistedIds.has(productId),
+    [wishlistedIds],
+  );
+
+  const toggleWishlist = useCallback(
+    async (productId: string) => {
+      const res = await fetch("/api/wishlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productId }),
+      });
+      if (res.status === 401) {
+        return { ok: false, requiresAuth: true };
+      }
+      if (!res.ok) {
+        return { ok: false };
+      }
+      const data = (await res.json()) as { saved: boolean };
+      setWishlistedIds((prev) => {
+        const next = new Set(prev);
+        if (data.saved) next.add(productId);
+        else next.delete(productId);
+        return next;
+      });
+      router.refresh();
+      return { ok: true, saved: data.saved };
+    },
+    [router],
+  );
+
   const count = cart?.totalItemCount ?? 0;
 
   return (
@@ -192,6 +249,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         addBatchToCart,
         setLineQuantity,
         applyCoupon,
+        isWishlisted,
+        toggleWishlist,
       }}
     >
       {children}

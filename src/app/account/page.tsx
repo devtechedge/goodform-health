@@ -10,6 +10,7 @@ import { listUserOrders } from "@/domain/orders/service";
 import { formatInrPaise } from "@/lib/india";
 import {
   AddressBookManager,
+  DeleteRoutineButton,
   ReorderButton,
   SignOutButton,
 } from "@/components/account/AccountActionsClient";
@@ -157,9 +158,15 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
                   key={rtn.id}
                   className="rounded-2xl border border-[var(--gf-border)] bg-[var(--gf-bg)] p-3.5 text-xs space-y-1.5"
                 >
-                  <p className="font-semibold text-sm text-[var(--gf-ink)]">
-                    {rtn.title}
-                  </p>
+                  <div className="flex items-start justify-between gap-2">
+                    <p className="font-semibold text-sm text-[var(--gf-ink)]">
+                      {rtn.title}
+                    </p>
+                    <DeleteRoutineButton
+                      routineId={rtn.id}
+                      routineTitle={rtn.title}
+                    />
+                  </div>
                   <p className="font-mono-label text-[var(--gf-ink-muted)]">
                     {rtn.productSlugsJson.join(", ")}
                   </p>

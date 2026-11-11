@@ -75,6 +75,39 @@ export function ReorderButton({ orderId }: { orderId: string }) {
   );
 }
 
+export function DeleteRoutineButton({
+  routineId,
+  routineTitle,
+}: {
+  routineId: string;
+  routineTitle: string;
+}) {
+  const router = useRouter();
+  const [busy, setBusy] = useState(false);
+
+  const onDelete = async () => {
+    setBusy(true);
+    await fetch(`/api/account/routines?id=${encodeURIComponent(routineId)}`, {
+      method: "DELETE",
+    });
+    setBusy(false);
+    router.refresh();
+  };
+
+  return (
+    <button
+      type="button"
+      disabled={busy}
+      aria-label={`Delete saved routine ${routineTitle}`}
+      data-testid={`delete-routine-${routineId}`}
+      onClick={() => void onDelete()}
+      className="inline-flex h-8 w-8 items-center justify-center rounded-full text-[var(--gf-ink-muted)] hover:bg-[var(--gf-surface-muted)]"
+    >
+      <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
+    </button>
+  );
+}
+
 export function ReturnRequestForm({ orderId }: { orderId: string }) {
   const router = useRouter();
   const [reason, setReason] = useState("Damaged transit seal");
