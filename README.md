@@ -25,12 +25,12 @@
 
 ## Key Capabilities
 
-- **40 Seeded Formulations + India FSSAI Publishing Gate:** All 40 requested SKUs live in PostgreSQL. A server-side gate publishes 32 compliant Health Supplement, Nutraceutical, Probiotic, Prebiotic, and FSDU items while automatically withholding 8 SKUs (**Shilajit**, **NAC**, **Ashwagandha Root Extract**, **Milk Thistle Extract**, **Curcumin + Piperine**, **Magnesium L-Threonate**, **L-Theanine**, and **Greens & Superfoods Blend**) from public listing and purchase pending India-specific legal, CDSCO/AYUSH, Schedule IV botanical, or Non-Specified Food clearance.
-- **Elemental Stoichiometry & Honest Signals:** Mineral labels print both compound salt weight and true elemental milligrams (for example 1,715 mg unbuffered magnesium bisglycinate = 240 mg elemental Mg). Zero fake reviews, star ratings, or urgency timers; category context badges cite primary research (`impuls8`, `ConsumerLab`, `Loop Health WHI`, `iHerb India`).
-- **Non-Diagnostic Routine Builder:** Filters by dietary origin (`Vegan` / `Vegetarian` / `Omnivore`) and format, aggregates elemental nutrients across 18 overlap keys, flags ICMR-NIN daily reference overlaps (such as stacking Vitamin D3, Zinc, or Biotin), and supports 1-click bag add, account saving, and shareable URLs.
-- **Full-Stack INR Commerce:** Guest-to-account transactional cart merge, wishlists, `PERCENT` and `FIXED_PAISE` coupons (`WELCOME10`, `ROUTINE250`), integer-paise arithmetic, 6-digit Indian PIN & state validation, Maharashtra `CGST + SGST` vs inter-state `IGST` breakdown, atomic conditional stock updates (`WHERE stock_on_hand - stock_reserved >= qty`), idempotent order creation, self-serve returns, and 1-click reorder.
-- **Payment & Email Adapters:** Official `razorpay` and `stripe` SDK adapters with constant-time HMAC signature verification and replay-idempotent `payment_webhook_events`, honest `DEMO_NON_CHARGING` fallback when keys are absent, plus an `email_outbox` sink and consent-gated newsletter with 1-click token unsubscribe.
-- **Protected `/admin` Console:** Server-enforced RBAC (`CUSTOMER`, `MERCHANDISER`, `COMPLIANCE_OFFICER`, `ADMIN`) with immutable `audit_logs` across all 40 SKUs, variant batches/expiries, FSSAI compliance states, coupons, orders, returns, and shipping settings. Demo accounts (`@goodform.demo`) are strictly disabled when `APP_ENV=production`.
+- **40 Seeded Formulations + India FSSAI Publishing Gate + Batch Verifier:** All 40 requested SKUs live in PostgreSQL. A server-side gate publishes 32 compliant Health Supplement, Nutraceutical, Probiotic, Prebiotic, and FSDU items while automatically withholding 8 SKUs (**Shilajit**, **NAC**, **Ashwagandha Root Extract**, **Milk Thistle Extract**, **Curcumin + Piperine**, **Magnesium L-Threonate**, **L-Theanine**, and **Greens & Superfoods Blend**). Visitors can inspect any SKU or batch code (such as `GF26K04D` or `GF-ACT-027`) in the interactive `/quality` verifier.
+- **Elemental Stoichiometry, Per-Serving Economics & Honest Signals:** Mineral labels print both compound salt weight and true elemental milligrams (for example 1,715 mg unbuffered magnesium bisglycinate = 240 mg elemental Mg), alongside per-serving INR pricing and honest refill-pack savings. Zero fake reviews, star ratings, or urgency timers; category context badges cite primary research (`impuls8`, `ConsumerLab`, `Loop Health WHI`, `iHerb India`).
+- **Non-Diagnostic Routine Builder:** Filters by dietary origin (`Vegan` / `Vegetarian` / `Omnivore`) and format, aggregates elemental nutrients across 18 overlap keys, flags ICMR-NIN daily reference overlaps (such as stacking Vitamin D3, Zinc, or Biotin), and supports 1-click bag add, account saving/deletion, and shareable URLs.
+- **Full-Stack INR Commerce & Privacy-Safe Order Tracking:** Guest-to-account transactional cart merge, synced wishlists, `PERCENT` and `FIXED_PAISE` coupons (`WELCOME10`, `ROUTINE250`), integer-paise arithmetic, 6-digit Indian PIN & state validation, Maharashtra `CGST + SGST` vs inter-state `IGST` breakdown, atomic conditional stock updates (`WHERE stock_on_hand - stock_reserved >= qty`), idempotent order creation, guest order tracking (`/orders/track` requiring matching order number + receipt email), self-serve returns, and 1-click reorder.
+- **Payment & Email Adapters:** Official `razorpay` (`checkout.js` modal + server callback) and `stripe` SDK adapters with constant-time HMAC signature verification and replay-idempotent `payment_webhook_events`, honest `DEMO_NON_CHARGING` fallback when keys are absent, plus an `email_outbox` sink and consent-gated newsletter with 1-click token unsubscribe.
+- **Protected `/admin` Console & Content CMS:** Server-enforced RBAC (`CUSTOMER`, `MERCHANDISER`, `COMPLIANCE_OFFICER`, `ADMIN`) with immutable `audit_logs` across all 40 SKUs, variant batches/expiries, FSSAI compliance states, coupons, orders, returns, FAQ/Learn monograph CMS (claim-validated), and separated paid-vs-demo AOV reports. Demo accounts (`@goodform.demo`) are strictly disabled when `APP_ENV=production`.
 
 ## Tech Stack
 
@@ -77,13 +77,13 @@ npm run smoke              # Live production health, headers, sitemap & route pr
 
 ## Documentation
 
-- Product & IA: [`docs/PRODUCT.md`](./docs/PRODUCT.md)
-- System Architecture: [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md)
-- Market Signals & Methodology: [`docs/RESEARCH.md`](./docs/RESEARCH.md)
-- India FSSAI & Claims Compliance: [`docs/COMPLIANCE.md`](./docs/COMPLIANCE.md)
-- Deployment Runbook: [`docs/DEPLOYMENT.md`](./docs/DEPLOYMENT.md)
-- Testing Guide: [`docs/TESTING.md`](./docs/TESTING.md)
-- Threat Model & Security Policy: [`SECURITY.md`](./SECURITY.md)
+- [Product & Information Architecture](docs/PRODUCT.md)
+- [System & Database Architecture](docs/ARCHITECTURE.md)
+- [Market Signals & Methodology](docs/RESEARCH.md)
+- [India FSSAI & Claims Governance](docs/COMPLIANCE.md)
+- [Deployment & Operations Runbook](docs/DEPLOYMENT.md)
+- [Testing & QA Suite](docs/TESTING.md)
+- [Security Policy & Threat Model](SECURITY.md)
 
 ## Demo & Compliance Limits
 
