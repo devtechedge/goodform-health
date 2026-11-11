@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 480" role="img" aria-label="Macro study of phospholipid bilayer vesicles encapsulating water-soluble glutathione">
+  <defs>
+    <radialGradient id="vesicleBg" cx="55%" cy="45%" r="65%">
+      <stop offset="0%" stop-color="#FCEAE5"/>
+      <stop offset="55%" stop-color="#EAE1F7"/>
+      <stop offset="100%" stop-color="#2B1429"/>
+    </radialGradient>
+    <radialGradient id="sphereMain" cx="38%" cy="32%" r="62%">
+      <stop offset="0%" stop-color="#FFFDF9"/>
+      <stop offset="45%" stop-color="#F6B2A2"/>
+      <stop offset="82%" stop-color="#C8432B"/>
+      <stop offset="100%" stop-color="#3B1836"/>
+    </radialGradient>
+    <radialGradient id="sphereSub" cx="35%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#FFFDF9"/>
+      <stop offset="55%" stop-color="#D4C2F0"/>
+      <stop offset="100%" stop-color="#4E3278"/>
+    </radialGradient>
+  </defs>
+  <rect width="720" height="480" rx="28" fill="url(#vesicleBg)"/>
+  <circle cx="430" cy="235" r="142" fill="url(#sphereMain)" opacity="0.94"/>
+  <circle cx="430" cy="235" r="112" fill="none" stroke="#FFFDF9" stroke-width="2.2" stroke-dasharray="5 6" opacity="0.72"/>
+  <circle cx="430" cy="235" r="78" fill="#FCF8F2" opacity="0.24"/>
+  <circle cx="215" cy="150" r="68" fill="url(#sphereSub)" opacity="0.88"/>
+  <circle cx="255" cy="335" r="52" fill="url(#sphereMain)" opacity="0.78"/>
+  <circle cx="585" cy="128" r="38" fill="url(#sphereSub)" opacity="0.82"/>
+  <rect x="32" y="396" width="336" height="52" rx="14" fill="#FFFDF9" opacity="0.93"/>
+  <text x="50" y="418" font-family="ui-monospace, monospace" font-size="10.5" font-weight="700" fill="#593C55" letter-spacing="1.1">MACRO PLATE 01 · PHOSPHOLIPID BILAYER</text>
+  <text x="50" y="436" font-family="Georgia, serif" font-size="14" fill="#261124">Sunflower Lecithin Liposome Dispersion</text>
+</svg>

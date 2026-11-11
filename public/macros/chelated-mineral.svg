@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 480" role="img" aria-label="Macro study of unbuffered magnesium bisglycinate crystalline chelate">
+  <defs>
+    <linearGradient id="mineralBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FCF8F2"/>
+      <stop offset="60%" stop-color="#EAE1F7"/>
+      <stop offset="100%" stop-color="#D7C8EC"/>
+    </linearGradient>
+    <linearGradient id="crystalA" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFFDF9"/>
+      <stop offset="100%" stop-color="#C9B6E8"/>
+    </linearGradient>
+    <linearGradient id="crystalB" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2B1429"/>
+      <stop offset="100%" stop-color="#5B3B8C"/>
+    </linearGradient>
+  </defs>
+  <rect width="720" height="480" rx="28" fill="url(#mineralBg)"/>
+  <polygon points="360,72 496,158 468,318 312,356 226,222" fill="url(#crystalA)" stroke="#4E3278" stroke-width="2"/>
+  <polygon points="360,72 496,158 386,232" fill="#FFFDF9" opacity="0.72"/>
+  <polygon points="386,232 496,158 468,318" fill="url(#crystalB)" opacity="0.86"/>
+  <circle cx="386" cy="232" r="22" fill="#C8432B"/>
+  <circle cx="386" cy="232" r="38" fill="none" stroke="#C8432B" stroke-width="1.8" stroke-dasharray="4 4"/>
+  <rect x="32" y="396" width="356" height="52" rx="14" fill="#FFFDF9" stroke="#E3D7C8"/>
+  <text x="50" y="418" font-family="ui-monospace, monospace" font-size="10.5" font-weight="700" fill="#593C55" letter-spacing="1.1">MACRO PLATE 02 · BISGLYCINATE CHELATE</text>
+  <text x="50" y="436" font-family="Georgia, serif" font-size="14" fill="#261124">14% True Elemental Mg · Zero Oxide Buffer</text>
+</svg>

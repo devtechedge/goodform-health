@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 480" role="img" aria-label="Macro study of golden triglyceride omega-3 and algal lipid droplets">
+  <defs>
+    <radialGradient id="lipidBg" cx="45%" cy="40%" r="70%">
+      <stop offset="0%" stop-color="#FFFDF9"/>
+      <stop offset="55%" stop-color="#FCEAE5"/>
+      <stop offset="100%" stop-color="#F2D3B8"/>
+    </radialGradient>
+    <radialGradient id="amberDrop" cx="35%" cy="30%" r="65%">
+      <stop offset="0%" stop-color="#FFF9EB"/>
+      <stop offset="42%" stop-color="#F5B971"/>
+      <stop offset="85%" stop-color="#C8432B"/>
+      <stop offset="100%" stop-color="#7A2414"/>
+    </radialGradient>
+  </defs>
+  <rect width="720" height="480" rx="28" fill="url(#lipidBg)"/>
+  <circle cx="390" cy="220" r="128" fill="url(#amberDrop)"/>
+  <ellipse cx="346" cy="168" rx="34" ry="18" transform="rotate(-24 346 168)" fill="#FFFDF9" opacity="0.65"/>
+  <circle cx="212" cy="276" r="74" fill="url(#amberDrop)" opacity="0.9"/>
+  <circle cx="556" cy="296" r="48" fill="url(#amberDrop)" opacity="0.82"/>
+  <circle cx="524" cy="118" r="26" fill="url(#amberDrop)" opacity="0.75"/>
+  <rect x="32" y="396" width="352" height="52" rx="14" fill="#FFFDF9" stroke="#E3D7C8"/>
+  <text x="50" y="418" font-family="ui-monospace, monospace" font-size="10.5" font-weight="700" fill="#593C55" letter-spacing="1.1">MACRO PLATE 03 · TRIGLYCERIDE LIPIDS</text>
+  <text x="50" y="436" font-family="Georgia, serif" font-size="14" fill="#261124">Standardized EPA &amp; DHA Milligrams</text>
+</svg>
