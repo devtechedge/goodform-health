@@ -58,8 +58,21 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    void refreshCart();
-  }, [refreshCart]);
+    let cancelled = false;
+    fetch("/api/cart", { cache: "no-store" })
+      .then((res) => (res.ok ? (res.json() as Promise<HydratedCartView>) : null))
+      .then((data) => {
+        if (!cancelled && data) {
+          setCart(data);
+        }
+      })
+      .catch(() => {
+        // Ignore transient hydration network errors.
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     if (!isOpen) return;

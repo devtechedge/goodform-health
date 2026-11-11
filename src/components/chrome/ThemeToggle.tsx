@@ -1,26 +1,44 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useSyncExternalStore } from "react";
 import { Moon, Sun } from "lucide-react";
 
 const STORAGE_KEY = "goodform_theme";
+const THEME_CHANGE_EVENT = "goodform-theme-change";
+
+function subscribeTheme(onStoreChange: () => void) {
+  window.addEventListener(THEME_CHANGE_EVENT, onStoreChange);
+  window.addEventListener("storage", onStoreChange);
+  return () => {
+    window.removeEventListener(THEME_CHANGE_EVENT, onStoreChange);
+    window.removeEventListener("storage", onStoreChange);
+  };
+}
+
+function getClientThemeSnapshot(): "light" | "dark" {
+  return document.documentElement.getAttribute("data-theme") === "dark"
+    ? "dark"
+    : "light";
+}
+
+function getServerThemeSnapshot(): "light" | "dark" {
+  return "light";
+}
 
 export function ThemeToggle() {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    const current =
-      document.documentElement.getAttribute("data-theme") === "dark"
-        ? "dark"
-        : "light";
-    setTheme(current);
-    setMounted(true);
-  }, []);
+  const theme = useSyncExternalStore(
+    subscribeTheme,
+    getClientThemeSnapshot,
+    getServerThemeSnapshot,
+  );
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
 
   const toggle = () => {
     const next = theme === "light" ? "dark" : "light";
-    setTheme(next);
     document.documentElement.setAttribute("data-theme", next);
     document.documentElement.style.colorScheme = next;
     try {
@@ -28,6 +46,7 @@ export function ThemeToggle() {
     } catch {
       // Ignore storage restriction errors in private browsing.
     }
+    window.dispatchEvent(new Event(THEME_CHANGE_EVENT));
   };
 
   const label = mounted
