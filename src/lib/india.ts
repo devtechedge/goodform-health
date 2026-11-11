@@ -50,10 +50,15 @@ export const INDIAN_STATE_CODES = INDIAN_STATES.map((s) => s.code) as [
 ];
 
 export const INDIA_PIN_REGEX = /^[1-9][0-9]{5}$/;
-export const INDIA_MOBILE_REGEX = /^(?:\+91[\s-]?)?[6-9][0-9]{9}$/;
+export const INDIA_MOBILE_REGEX = /^(?:\+91|91|0)?[6-9][0-9]{9}$/;
 
 export function isValidIndianPin(pin: string): boolean {
   return INDIA_PIN_REGEX.test(pin.trim());
+}
+
+export function isValidIndianMobile(phone: string): boolean {
+  const compact = phone.trim().replace(/[\s()-]/g, "");
+  return INDIA_MOBILE_REGEX.test(compact);
 }
 
 export function getStateByCode(code: string): IndianStateInfo | undefined {

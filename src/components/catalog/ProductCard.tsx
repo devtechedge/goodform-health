@@ -44,9 +44,9 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
   return (
     <article
       data-testid={`product-card-${product.slug}`}
-      className="group relative flex flex-col justify-between rounded-3xl border border-[var(--gf-border)] bg-[var(--gf-surface)] p-4 transition-colors hover:border-[var(--gf-border-strong)]"
+      className="group relative flex min-w-0 flex-col justify-between rounded-3xl border border-[var(--gf-border)] bg-[var(--gf-surface)] p-4 transition-colors hover:border-[var(--gf-border-strong)]"
     >
-      <div>
+      <div className="min-w-0">
         <div className="relative">
           <Link href={`/product/${product.slug}`} className="block">
             <PackshotVisual
@@ -113,10 +113,10 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
         ) : null}
 
         {product.marketSignalBadge ? (
-          <div className="mt-2.5">
-            <Badge tone="lilac" className="max-w-full">
+          <div className="mt-2.5 min-w-0">
+            <Badge tone="lilac" className="max-w-full overflow-hidden">
               <Sparkles className="h-3 w-3 shrink-0" aria-hidden="true" />
-              <span className="truncate">{product.marketSignalBadge}</span>
+              <span className="min-w-0 truncate">{product.marketSignalBadge}</span>
             </Badge>
           </div>
         ) : null}

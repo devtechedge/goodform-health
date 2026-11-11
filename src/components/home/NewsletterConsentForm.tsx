@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { NEWSLETTER_CONSENT_STATEMENT } from "@/domain/email/service";
+import { NEWSLETTER_CONSENT_STATEMENT } from "@/lib/brand";
 import { Button } from "@/components/ui/Button";
 
 export function NewsletterConsentForm() {

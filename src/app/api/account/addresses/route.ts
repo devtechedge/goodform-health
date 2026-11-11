@@ -6,7 +6,11 @@ import { getDb } from "@/db/client";
 import { addresses } from "@/db/schema/users";
 import { getCurrentUser } from "@/domain/auth/rbac";
 import { assertSameOriginOrJson403 } from "@/lib/http";
-import { getStateByCode, INDIA_MOBILE_REGEX, isValidIndianPin } from "@/lib/india";
+import {
+  getStateByCode,
+  isValidIndianMobile,
+  isValidIndianPin,
+} from "@/lib/india";
 
 export const dynamic = "force-dynamic";
 
@@ -66,7 +70,7 @@ export async function POST(request: Request) {
       { status: 400 },
     );
   }
-  if (!INDIA_MOBILE_REGEX.test(parsed.data.phone)) {
+  if (!isValidIndianMobile(parsed.data.phone)) {
     return NextResponse.json(
       { error: "Enter a valid 10-digit Indian mobile number." },
       { status: 400 },

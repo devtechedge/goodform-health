@@ -3,7 +3,10 @@ import { eq } from "drizzle-orm";
 import { getDb, type Database } from "@/db/client";
 import { emailOutbox, newsletterSubscribers } from "@/db/schema/content";
 import { getEnv, getSiteUrl } from "@/env";
+import { NEWSLETTER_CONSENT_STATEMENT } from "@/lib/brand";
 import { formatInrPaise } from "@/lib/india";
+
+export { NEWSLETTER_CONSENT_STATEMENT };
 
 export interface SendEmailInput {
   toEmail: string;
@@ -88,9 +91,6 @@ export async function sendOrderReceiptEmail(
     dbOverride,
   );
 }
-
-export const NEWSLETTER_CONSENT_STATEMENT =
-  "I explicitly consent to receive occasional formulation notes and label-literacy guides from GOODFORM by email, and understand I can unsubscribe with one click at any time.";
 
 export async function subscribeToNewsletter(
   params: {

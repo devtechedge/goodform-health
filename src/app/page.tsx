@@ -107,7 +107,7 @@ export default async function HomePage() {
       {/* Ingredient Macro Chemistry Spotlight */}
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="grid items-center gap-10 lg:grid-cols-12">
-          <div className="lg:col-span-5 space-y-4">
+          <div className="lg:col-span-5 space-y-4 min-w-0">
             <Badge tone="lilac">Ingredient Macro Ledger</Badge>
             <h2 className="font-display text-3xl text-[var(--gf-ink)] sm:text-4xl">
               Why our jars print two milligram numbers
@@ -125,7 +125,7 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <div className="lg:col-span-7 grid gap-4 sm:grid-cols-2">
+          <div className="lg:col-span-7 grid gap-4 sm:grid-cols-2 min-w-0">
             <figure className="overflow-hidden rounded-3xl border border-[var(--gf-border)] bg-[var(--gf-surface)] p-3">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -160,7 +160,7 @@ export default async function HomePage() {
       {/* Routine Builder + FSSAI Governance Split */}
       <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
         <div className="grid gap-6 lg:grid-cols-12">
-          <div className="lg:col-span-7 rounded-[2rem] border border-[var(--gf-lilac-border)] bg-[var(--gf-lilac)] p-7 sm:p-9 flex flex-col justify-between">
+          <div className="lg:col-span-7 min-w-0 rounded-[2rem] border border-[var(--gf-lilac-border)] bg-[var(--gf-lilac)] p-7 sm:p-9 flex flex-col justify-between">
             <div className="space-y-3">
               <span className="font-mono-label text-xs uppercase tracking-[0.16em] text-[var(--gf-lilac-ink)]">
                 Non-Diagnostic Stack Planner
@@ -183,7 +183,7 @@ export default async function HomePage() {
             </div>
           </div>
 
-          <div className="lg:col-span-5 rounded-[2rem] border border-[var(--gf-border-strong)] bg-[var(--gf-surface)] p-7 sm:p-9 space-y-4">
+          <div className="lg:col-span-5 min-w-0 rounded-[2rem] border border-[var(--gf-border-strong)] bg-[var(--gf-surface)] p-7 sm:p-9 space-y-4">
             <div className="flex items-center gap-2 text-xs font-mono-label uppercase tracking-wider text-[var(--gf-ink-muted)]">
               <Scale className="h-4 w-4 text-[var(--gf-persimmon)]" aria-hidden="true" />
               <span>India FSSAI Publishing Gate</span>
@@ -213,7 +213,7 @@ export default async function HomePage() {
       {/* FAQ + Explicit Consent Newsletter */}
       <section className="border-t border-[var(--gf-border)] bg-[var(--gf-surface)] py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 grid gap-12 lg:grid-cols-12">
-          <div className="lg:col-span-7">
+          <div className="lg:col-span-7 min-w-0">
             <h2 className="font-display text-3xl text-[var(--gf-ink)]">
               Common Questions
             </h2>
@@ -242,7 +242,7 @@ export default async function HomePage() {
             </p>
           </div>
 
-          <div className="lg:col-span-5">
+          <div className="lg:col-span-5 min-w-0">
             <div className="rounded-3xl border border-[var(--gf-border)] bg-[var(--gf-bg)] p-6 sm:p-8 space-y-4">
               <Badge tone="persimmon">Consent-First Dispatch</Badge>
               <h2 className="font-display text-2xl text-[var(--gf-ink)]">

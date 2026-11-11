@@ -17,7 +17,11 @@ import { evaluateFssaiPublishingGate } from "@/domain/compliance/fssai-gate";
 import { evaluateCouponRecord } from "@/domain/pricing/coupons";
 import { computeOrderPricing } from "@/domain/pricing/totals";
 import { getEffectiveAppEnv } from "@/env";
-import { getStateByCode, INDIA_MOBILE_REGEX, isValidIndianPin } from "@/lib/india";
+import {
+  getStateByCode,
+  isValidIndianMobile,
+  isValidIndianPin,
+} from "@/lib/india";
 
 export class OrderDomainError extends Error {
   constructor(
@@ -79,7 +83,7 @@ export async function createTransactionalOrder(
     );
   }
 
-  if (!INDIA_MOBILE_REGEX.test(input.shippingAddress.phone.trim())) {
+  if (!isValidIndianMobile(input.shippingAddress.phone)) {
     throw new OrderDomainError(
       "INVALID_ADDRESS",
       "Enter a valid 10-digit Indian mobile number.",

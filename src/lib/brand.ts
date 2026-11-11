@@ -17,3 +17,6 @@ export const BRAND = {
   demoSeedNotice:
     "Concept storefront: formulation parameters, batch numbers, and FBO licence placeholders are seeded demo records until owner-verified.",
 } as const;
+
+export const NEWSLETTER_CONSENT_STATEMENT =
+  "I explicitly consent to receive occasional formulation notes and label-literacy guides from GOODFORM by email, and understand I can unsubscribe with one click at any time.";
