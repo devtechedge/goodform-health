@@ -95,8 +95,8 @@ test.describe("GOODFORM End-to-End Storefront, Compliance, Commerce & WCAG 2.2 A
 
     // Quality charter transparently lists all 8 withheld SKUs
     await page.goto("/quality");
-    await expect(page.getByText("GF-ACT-027")).toBeVisible();
-    await expect(page.getByText("GF-ANT-034")).toBeVisible();
+    await expect(page.getByText("GF-ACT-027", { exact: true })).toBeVisible();
+    await expect(page.getByText("GF-ANT-034", { exact: true })).toBeVisible();
   });
 
   test("computes live nutrient overlap cautions in /routine-builder and adds stack to bag", async ({
@@ -176,6 +176,93 @@ test.describe("GOODFORM End-to-End Storefront, Compliance, Commerce & WCAG 2.2 A
     await expect(shilajitForm.getByRole("alert")).toContainText(
       /FSSAI Publishing Gate blocked publishing Shilajit/i,
     );
+
+    // Verify /admin/settings FAQ CMS blocks prohibited medical claims and logs valid updates
+    await page.goto("/admin/settings");
+    const faqForm = page.getByTestId("faq-editor-faq_01");
+    await expect(faqForm).toBeVisible();
+    const originalAnswer = await faqForm.locator("textarea").inputValue();
+
+    await faqForm.locator("textarea").fill("FSSAI approved capsule that cures diabetes.");
+    await faqForm.getByRole("button", { name: "Save FAQ" }).click();
+    await expect(faqForm.getByRole("alert")).toContainText(/Never imply FSSAI/i);
+
+    await faqForm.locator("textarea").fill(originalAnswer);
+    await faqForm.getByRole("button", { name: "Save FAQ" }).click();
+    await expect(faqForm.getByRole("status")).toContainText(/Saved & audited/i);
+  });
+
+  test("verifies /contact & /cart metadata, /shop filter chips, /quality batch verifier, wishlist sync, and /orders/track", async ({
+    page,
+  }) => {
+    await page.goto("/contact");
+    await expect(page).toHaveTitle(/Contact & Grievance Desk \| GOODFORM/);
+    const contactCanonical = await page
+      .locator('link[rel="canonical"]')
+      .getAttribute("href");
+    expect(contactCanonical).toMatch(/\/contact$/);
+
+    await page.goto("/cart");
+    await expect(page).toHaveTitle(/Your Apothecary Bag \| GOODFORM/);
+    const cartRobots = await page
+      .locator('meta[name="robots"]')
+      .getAttribute("content");
+    expect(cartRobots).toContain("noindex");
+
+    // Active filter chips + per-serving cost on /shop
+    await page.goto("/shop?q=Magnesium&inStock=true");
+    await expect(page.getByTestId("shop-active-filters")).toContainText(
+      'Search: "Magnesium"',
+    );
+    await expect(
+      page.getByTestId("product-card-magnesium-glycinate"),
+    ).toContainText("/serving");
+
+    // Interactive Batch & SKU Compliance Verifier on /quality
+    await page.goto("/quality");
+    await page.getByRole("button", { name: /GF26K04D/i }).click();
+    await expect(page.getByTestId("batch-verifier-result")).toContainText(
+      "PUBLISHED · GATE CLEAR",
+    );
+    await page.getByRole("button", { name: /GF-ACT-027/i }).click();
+    await expect(page.getByTestId("batch-verifier-result")).toContainText(
+      "WITHHELD (PENDING_LEGAL_REVIEW)",
+    );
+
+    // Privacy-safe Guest Order Lookup (/orders/track)
+    await page.goto("/orders/track?order=GF-2026-1001");
+    await page.locator("#trk-email").fill("wrong@example.in");
+    await page.getByTestId("track-order-submit").click();
+    await expect(page.locator("main").getByRole("alert")).toContainText(
+      /No order matched/i,
+    );
+
+    await page.locator("#trk-email").fill("aarav@goodform.demo");
+    await page.getByTestId("track-order-submit").click();
+    await expect(page.getByTestId("tracked-order-card")).toContainText(
+      "GF-2026-1001",
+    );
+
+    // Wishlist context hydration across page navigation
+    await page.goto("/login?next=/shop");
+    await page.getByTestId("demo-login-customer").click();
+    await expect(
+      page.getByRole("heading", { name: /All Published Formulations/i }),
+    ).toBeVisible();
+    const card = page.getByTestId("product-card-vitamin-d3-k2-mk7");
+    await card
+      .getByRole("button", { name: /Save Vitamin D3 \+ K2 MK-7 to wishlist/i })
+      .click();
+    await expect(
+      card.getByRole("button", {
+        name: /Remove Vitamin D3 \+ K2 MK-7 from wishlist/i,
+      }),
+    ).toBeVisible();
+
+    await page.goto("/wishlist");
+    await expect(
+      page.getByTestId("product-card-vitamin-d3-k2-mk7"),
+    ).toBeVisible();
   });
 
   test("has zero horizontal overflow at 390px, 768px, and 1440px across key routes", async ({

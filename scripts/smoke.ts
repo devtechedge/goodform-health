@@ -30,6 +30,7 @@ const PUBLIC_ROUTES = [
   "/terms",
   "/disclaimer",
   "/cart",
+  "/orders/track",
   "/wishlist",
   "/login",
   "/signup",
