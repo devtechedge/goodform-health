@@ -1,0 +1,79 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: goodform_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d goodform_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      APP_ENV: demo
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/goodform_test
+      DATABASE_URL_UNPOOLED: postgresql://postgres:postgres@localhost:5432/goodform_test
+      TEST_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/goodform_test
+      NEXT_PUBLIC_SITE_URL: http://localhost:3120
+      SESSION_SECRET: ci-goodform-session-secret-minimum-32-chars-2026
+      ALLOW_PROD_SEED: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Audit production dependencies
+        run: npm audit --omit=dev
+      - name: Lint
+        run: npm run lint
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Unit tests
+        run: npm test
+      - name: Apply PostgreSQL migrations and seed 40 SKUs
+        run: |
+          npm run db:migrate
+          npm run db:seed:demo
+      - name: PostgreSQL integration tests
+        run: npm run test:integration
+      - name: Production build
+        run: npm run build
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+      - name: End-to-end journeys, overflow & axe WCAG 2.2 AA
+        run: npm run e2e
+        env:
+          CI: "true"
+          E2E_PORT: "3120"
+      - name: Upload Playwright report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+          if-no-files-found: ignore
