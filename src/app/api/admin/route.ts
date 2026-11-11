@@ -6,7 +6,7 @@ import { z } from "zod";
 import { getDb } from "@/db/client";
 import { products, productVariants } from "@/db/schema/catalog";
 import { coupons } from "@/db/schema/commerce";
-import { storeSettings } from "@/db/schema/content";
+import { faqs, learnArticles, storeSettings } from "@/db/schema/content";
 import {
   getCurrentUser,
   roleHasPermission,
@@ -110,6 +110,20 @@ const actionSchema = z.discriminatedUnion("action", [
     standardShippingPaise: z.number().int().min(0).max(100000),
     announcementBarText: z.string().trim().min(5).max(180),
   }),
+  z.object({
+    action: z.literal("updateFaq"),
+    faqId: z.string().min(2),
+    question: z.string().trim().min(5).max(240),
+    answer: z.string().trim().min(10).max(1200),
+    isPublished: z.boolean(),
+  }),
+  z.object({
+    action: z.literal("updateLearnArticle"),
+    articleId: z.string().min(2),
+    title: z.string().trim().min(5).max(200),
+    summary: z.string().trim().min(10).max(600),
+    isPublished: z.boolean(),
+  }),
 ]);
 
 const ACTION_PERMISSION: Record<
@@ -123,6 +137,8 @@ const ACTION_PERMISSION: Record<
   transitionOrder: "orders:write",
   resolveReturn: "orders:write",
   updateStoreSettings: "content:write",
+  updateFaq: "content:write",
+  updateLearnArticle: "content:write",
 };
 
 export async function POST(request: Request) {
@@ -397,6 +413,89 @@ export async function POST(request: Request) {
         },
         db,
       );
+    } else if (payload.action === "updateFaq") {
+      const claimViolations = validateClaimsCopy({
+        shortSummary: payload.question,
+        editorialDescription: payload.answer,
+        labelSummary: "",
+      });
+      if (claimViolations.length > 0) {
+        return NextResponse.json(
+          { error: claimViolations[0]!.message, violations: claimViolations },
+          { status: 422 },
+        );
+      }
+
+      const [existingFaq] = await db
+        .select()
+        .from(faqs)
+        .where(eq(faqs.id, payload.faqId));
+      if (!existingFaq) {
+        return NextResponse.json({ error: "FAQ not found." }, { status: 404 });
+      }
+
+      await db
+        .update(faqs)
+        .set({
+          question: payload.question,
+          answer: payload.answer,
+          isPublished: payload.isPublished,
+        })
+        .where(eq(faqs.id, payload.faqId));
+
+      await writeAuditLog(
+        {
+          actor,
+          action: "FAQ_CONTENT_UPDATE",
+          entityType: "faq",
+          entityId: payload.faqId,
+          summary: `Updated FAQ ${payload.faqId} (published=${payload.isPublished})`,
+        },
+        db,
+      );
+      revalidatePath("/faq");
+    } else if (payload.action === "updateLearnArticle") {
+      const claimViolations = validateClaimsCopy({
+        shortSummary: payload.title,
+        editorialDescription: payload.summary,
+        labelSummary: "",
+      });
+      if (claimViolations.length > 0) {
+        return NextResponse.json(
+          { error: claimViolations[0]!.message, violations: claimViolations },
+          { status: 422 },
+        );
+      }
+
+      const [existingArt] = await db
+        .select()
+        .from(learnArticles)
+        .where(eq(learnArticles.id, payload.articleId));
+      if (!existingArt) {
+        return NextResponse.json({ error: "Monograph not found." }, { status: 404 });
+      }
+
+      await db
+        .update(learnArticles)
+        .set({
+          title: payload.title,
+          summary: payload.summary,
+          isPublished: payload.isPublished,
+          updatedAt: new Date(),
+        })
+        .where(eq(learnArticles.id, payload.articleId));
+
+      await writeAuditLog(
+        {
+          actor,
+          action: "LEARN_MONOGRAPH_UPDATE",
+          entityType: "learn_article",
+          entityId: payload.articleId,
+          summary: `Updated monograph "${payload.title}" (published=${payload.isPublished})`,
+        },
+        db,
+      );
+      revalidatePath("/learn");
     }
 
     revalidatePath("/");

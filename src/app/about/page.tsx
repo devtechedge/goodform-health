@@ -61,6 +61,19 @@ export default function AboutPage() {
           </Link>
         </div>
       </section>
+
+      <section className="rounded-3xl border border-[var(--gf-border)] bg-[var(--gf-surface)] p-7 space-y-4">
+        <Badge tone="neutral">Nov 2026 India Shelf Context</Badge>
+        <h2 className="font-display text-2xl text-[var(--gf-ink)]">
+          Why single-brand apothecary retail wins in India
+        </h2>
+        <p className="text-sm leading-relaxed text-[var(--gf-ink-muted)]">
+          Tracked non-protein supplement volume on Amazon India exceeds an estimated INR 991.3 crore floor annually across 435 brands, with Indian D2C brands holding 41.1% of shelf value (impuls8, Nov 2026; Diwali-week badge lower bound, not audited GMV). Yet the largest everyday categories remain deeply fragmented: Omega &amp; Fish Oil (INR 121.9cr, top share 18%), Multivitamins (INR 111.0cr, top share 21%), Magnesium (INR 86.3cr, top share 15%, +1.27x YoY search), and Collagen (INR 60.5cr).
+        </p>
+        <p className="text-sm leading-relaxed text-[var(--gf-ink-muted)]">
+          Across Indian buyer communities and urban workforce surveys (Loop Health WHI 2026; ConsumerLab 2026), repeat retention hinges on two things: transparent elemental chemistry without oxide buffering, and multi-jar daily routines that prevent accidental micronutrient duplication.
+        </p>
+      </section>
     </div>
   );
 }

@@ -2,6 +2,7 @@ import React from "react";
 import type { Metadata } from "next";
 import { loadAllHydratedProducts } from "@/domain/catalog/service";
 import { BRAND } from "@/lib/brand";
+import { BatchComplianceVerifier } from "@/components/quality/BatchComplianceVerifier";
 import { Badge } from "@/components/ui/Badge";
 import { Callout } from "@/components/ui/Callout";
 
@@ -61,6 +62,8 @@ export default async function QualityPage() {
           </p>
         </div>
       </div>
+
+      <BatchComplianceVerifier />
 
       <section id="held-skus" className="space-y-4">
         <h2 className="font-display text-3xl text-[var(--gf-ink)]">

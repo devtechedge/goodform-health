@@ -4,9 +4,10 @@ import Link from "next/link";
 import { desc } from "drizzle-orm";
 import { getDb } from "@/db/client";
 import { orders, returnRequests } from "@/db/schema/commerce";
-import { auditLogs } from "@/db/schema/content";
+import { auditLogs, newsletterSubscribers } from "@/db/schema/content";
 import { requireAdminPageUser } from "@/domain/auth/rbac";
 import { loadAllHydratedProducts } from "@/domain/catalog/service";
+import { COLLECTIONS } from "@/lib/collections";
 import { formatInrPaise } from "@/lib/india";
 import { AdminNav } from "@/components/admin/AdminNav";
 
@@ -21,12 +22,14 @@ export default async function AdminOverviewPage() {
   const actor = await requireAdminPageUser("admin:access");
   const db = await getDb();
 
-  const [allProducts, allOrders, allReturns, recentAudits] = await Promise.all([
-    loadAllHydratedProducts(db),
-    db.select().from(orders).orderBy(desc(orders.createdAt)),
-    db.select().from(returnRequests),
-    db.select().from(auditLogs).orderBy(desc(auditLogs.createdAt)).limit(6),
-  ]);
+  const [allProducts, allOrders, allReturns, recentAudits, subscribers] =
+    await Promise.all([
+      loadAllHydratedProducts(db),
+      db.select().from(orders).orderBy(desc(orders.createdAt)),
+      db.select().from(returnRequests),
+      db.select().from(auditLogs).orderBy(desc(auditLogs.createdAt)).limit(6),
+      db.select().from(newsletterSubscribers),
+    ]);
 
   const publishedCount = allProducts.filter(
     (p) => p.gateVerdict.canAppearInPublicStore,
@@ -43,6 +46,28 @@ export default async function AdminOverviewPage() {
     0,
   );
   const demoVolumePaise = demoOrders.reduce((sum, o) => sum + o.totalPaise, 0);
+  const realAovPaise =
+    capturedOrders.length > 0
+      ? Math.round(realCapturedPaise / capturedOrders.length)
+      : 0;
+  const demoAovPaise =
+    demoOrders.length > 0
+      ? Math.round(demoVolumePaise / demoOrders.length)
+      : 0;
+  const activeSubscriberCount = subscribers.filter(
+    (s) => s.status === "ACTIVE",
+  ).length;
+
+  const collectionBreakdown = COLLECTIONS.map((col) => {
+    const inShelf = allProducts.filter((p) => p.primaryCollection === col.slug);
+    const pub = inShelf.filter((p) => p.gateVerdict.canAppearInPublicStore).length;
+    return {
+      name: col.name,
+      total: inShelf.length,
+      published: pub,
+      held: inShelf.length - pub,
+    };
+  });
 
   const lowStockVariants = allProducts
     .filter((p) => p.gateVerdict.canAppearInPublicStore)
@@ -88,7 +113,8 @@ export default async function AdminOverviewPage() {
             {formatInrPaise(realCapturedPaise)}
           </p>
           <p className="mt-1 text-xs">
-            {capturedOrders.length} verified provider order(s)
+            {capturedOrders.length} paid order(s) · AOV{" "}
+            {formatInrPaise(realAovPaise)}
           </p>
         </div>
 
@@ -100,22 +126,44 @@ export default async function AdminOverviewPage() {
             {formatInrPaise(demoVolumePaise)}
           </p>
           <p className="mt-1 text-xs">
-            {demoOrders.length} non-charging DEMO_ORDER record(s)
+            {demoOrders.length} DEMO_ORDER(s) · AOV{" "}
+            {formatInrPaise(demoAovPaise)}
           </p>
         </div>
 
         <div className="rounded-3xl border border-[var(--gf-border)] bg-[var(--gf-surface)] p-5">
           <p className="font-mono-label text-xs uppercase text-[var(--gf-ink-muted)]">
-            Open Return Requests
+            Returns &amp; Opt-In Dispatch
           </p>
           <p className="mt-2 font-mono-label text-3xl font-semibold">
-            {openReturnsCount}
+            {openReturnsCount} open
           </p>
           <p className="mt-1 text-xs text-[var(--gf-ink-muted)]">
-            Total logged returns: {allReturns.length}
+            {allReturns.length} total returns · {activeSubscriberCount} consent subscriber(s)
           </p>
         </div>
       </div>
+
+      <section className="mt-8 rounded-3xl border border-[var(--gf-border)] bg-[var(--gf-surface)] p-6 space-y-4">
+        <h2 className="font-display text-2xl text-[var(--gf-ink)]">
+          Shelf Architecture Breakdown (Published vs FSSAI-Held)
+        </h2>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 text-xs">
+          {collectionBreakdown.map((c) => (
+            <div
+              key={c.name}
+              className="rounded-2xl border border-[var(--gf-border)] bg-[var(--gf-bg)] p-3.5"
+            >
+              <p className="font-semibold text-sm text-[var(--gf-ink)]">
+                {c.name}
+              </p>
+              <p className="mt-1 font-mono-label text-[var(--gf-ink-muted)]">
+                {c.published} published · {c.held} held ({c.total} primary)
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
 
       <div className="mt-8 grid gap-8 lg:grid-cols-12">
         <section className="lg:col-span-6 rounded-3xl border border-[var(--gf-border)] bg-[var(--gf-surface)] p-6 space-y-4">

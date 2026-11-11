@@ -1,16 +1,21 @@
 import React from "react";
 import type { Metadata } from "next";
-import { desc, eq } from "drizzle-orm";
+import { asc, desc, eq } from "drizzle-orm";
 import { getDb } from "@/db/client";
 import {
   contactInquiries,
+  faqs,
   learnArticles,
   newsletterSubscribers,
   storeSettings,
 } from "@/db/schema/content";
 import { requireAdminPageUser } from "@/domain/auth/rbac";
 import { AdminNav } from "@/components/admin/AdminNav";
-import { StoreSettingsForm } from "@/components/admin/AdminOpsClient";
+import {
+  FaqContentRowEditor,
+  LearnArticleRowEditor,
+  StoreSettingsForm,
+} from "@/components/admin/AdminOpsClient";
 import { Badge } from "@/components/ui/Badge";
 
 export const dynamic = "force-dynamic";
@@ -24,16 +29,18 @@ export default async function AdminSettingsPage() {
   const actor = await requireAdminPageUser("admin:access");
   const db = await getDb();
 
-  const [settingsRows, articles, subscribers, inquiries] = await Promise.all([
-    db.select().from(storeSettings).where(eq(storeSettings.id, "default")),
-    db.select().from(learnArticles),
-    db.select().from(newsletterSubscribers),
-    db
-      .select()
-      .from(contactInquiries)
-      .orderBy(desc(contactInquiries.createdAt))
-      .limit(10),
-  ]);
+  const [settingsRows, articles, faqRows, subscribers, inquiries] =
+    await Promise.all([
+      db.select().from(storeSettings).where(eq(storeSettings.id, "default")),
+      db.select().from(learnArticles).orderBy(asc(learnArticles.sortOrder)),
+      db.select().from(faqs).orderBy(asc(faqs.sortOrder)),
+      db.select().from(newsletterSubscribers),
+      db
+        .select()
+        .from(contactInquiries)
+        .orderBy(desc(contactInquiries.createdAt))
+        .limit(10),
+    ]);
 
   const s = settingsRows[0];
   const activeSubs = subscribers.filter((x) => x.status === "ACTIVE").length;
@@ -88,6 +95,36 @@ export default async function AdminSettingsPage() {
             )}
           </div>
         </div>
+      </div>
+
+      <div className="grid gap-8 lg:grid-cols-2">
+        <section className="rounded-3xl border border-[var(--gf-border)] bg-[var(--gf-surface)] p-6 space-y-3">
+          <h2 className="font-display text-2xl text-[var(--gf-ink)]">
+            Learn Monographs CMS ({articles.length})
+          </h2>
+          <p className="text-xs text-[var(--gf-ink-muted)]">
+            Checked against FSSAI prohibited-claim rules and written to the audit log on save.
+          </p>
+          <div className="space-y-3">
+            {articles.map((art) => (
+              <LearnArticleRowEditor key={art.id} article={art} />
+            ))}
+          </div>
+        </section>
+
+        <section className="rounded-3xl border border-[var(--gf-border)] bg-[var(--gf-surface)] p-6 space-y-3">
+          <h2 className="font-display text-2xl text-[var(--gf-ink)]">
+            FAQ Dispensary CMS ({faqRows.length})
+          </h2>
+          <p className="text-xs text-[var(--gf-ink-muted)]">
+            Edit customer answers and toggle publication status.
+          </p>
+          <div className="space-y-3">
+            {faqRows.map((f) => (
+              <FaqContentRowEditor key={f.id} faq={f} />
+            ))}
+          </div>
+        </section>
       </div>
     </div>
   );
