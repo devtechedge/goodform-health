@@ -42,6 +42,41 @@ interface CompletedReceipt {
   mode: string;
 }
 
+interface RazorpayCheckoutOptions {
+  key: string;
+  amount: number;
+  currency: string;
+  name: string;
+  description: string;
+  order_id: string;
+  prefill?: { name?: string; email?: string; contact?: string };
+  handler: (response: {
+    razorpay_order_id: string;
+    razorpay_payment_id: string;
+    razorpay_signature: string;
+  }) => void | Promise<void>;
+  modal?: { ondismiss?: () => void };
+}
+
+declare global {
+  interface Window {
+    Razorpay?: new (options: RazorpayCheckoutOptions) => { open: () => void };
+  }
+}
+
+function loadRazorpaySdk(): Promise<boolean> {
+  if (typeof window === "undefined") return Promise.resolve(false);
+  if (window.Razorpay) return Promise.resolve(true);
+  return new Promise((resolve) => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    script.onload = () => resolve(Boolean(window.Razorpay));
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+}
+
 export function CheckoutClient({
   initialUser,
   savedAddresses,
@@ -153,6 +188,59 @@ export function CheckoutClient({
         return;
       }
 
+      if (data.mode === "razorpay" && data.razorpay) {
+        await refreshCart();
+        const loaded = await loadRazorpaySdk();
+        if (!loaded || !window.Razorpay) {
+          setError(
+            `Order ${data.orderNumber} created (PENDING_PAYMENT), but Razorpay Checkout SDK could not load.`,
+          );
+          return;
+        }
+        const rzp = new window.Razorpay({
+          key: data.razorpay.keyId,
+          amount: data.razorpay.amountPaise,
+          currency: data.razorpay.currency,
+          name: "GOODFORM",
+          description: `Order ${data.orderNumber}`,
+          order_id: data.razorpay.providerOrderId,
+          prefill: {
+            name: customerName,
+            email: customerEmail,
+            contact: phone,
+          },
+          handler: async (rzpRes) => {
+            const verifyRes = await fetch("/api/payments/razorpay/verify", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                orderId: data.orderId,
+                razorpay_order_id: rzpRes.razorpay_order_id,
+                razorpay_payment_id: rzpRes.razorpay_payment_id,
+                razorpay_signature: rzpRes.razorpay_signature,
+              }),
+            });
+            setReceipt({
+              orderId: data.orderId,
+              orderNumber: data.orderNumber,
+              orderStatus: verifyRes.ok ? "CONFIRMED" : data.orderStatus,
+              paymentStatus: verifyRes.ok ? "CAPTURED" : data.paymentStatus,
+              totalPaise: data.totalPaise,
+              mode: "razorpay",
+            });
+          },
+          modal: {
+            ondismiss: () => {
+              setError(
+                `Payment window closed for Order ${data.orderNumber}. Status remains PENDING_PAYMENT until completed.`,
+              );
+            },
+          },
+        });
+        rzp.open();
+        return;
+      }
+
       await refreshCart();
       setReceipt({
         orderId: data.orderId,
@@ -246,7 +334,14 @@ export function CheckoutClient({
             >
               Inspect Order Details
             </Link>
-          ) : null}
+          ) : (
+            <Link
+              href={`/orders/track?order=${encodeURIComponent(receipt.orderNumber)}`}
+              className={buttonClasses({ variant: "primary" })}
+            >
+              Track Order Status
+            </Link>
+          )}
           <Link href="/shop" className={buttonClasses({ variant: "outline" })}>
             Continue Browsing
           </Link>

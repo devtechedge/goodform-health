@@ -91,6 +91,14 @@ export function SiteFooter() {
             <ul className="mt-3 space-y-2 text-sm">
               <li>
                 <Link
+                  href="/orders/track"
+                  className="hover:text-[var(--gf-persimmon)]"
+                >
+                  Track Guest Order
+                </Link>
+              </li>
+              <li>
+                <Link
                   href="/contact"
                   className="hover:text-[var(--gf-persimmon)]"
                 >
