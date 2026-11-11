@@ -81,11 +81,11 @@
     <line x1="200" y1="281" x2="400" y2="281" stroke="#E3D7C8" stroke-width="1"/>
 
     <!-- Product Display Name -->
-    <text x="200" y="308" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#261124">Iron Bisglycinate</text>
-    
+    <text x="200" y="308" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#261124">Iron</text>
+    <text x="200" y="331" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#261124">Bisglycinate</text>
 
     <!-- Subtitle -->
-    <text x="200" y="331" font-family="system-ui, sans-serif" font-size="10.5" fill="#593C55">Gentle Ferrous Bisglycinate Chelate + Vi...</text>
+    <text x="200" y="351" font-family="system-ui, sans-serif" font-size="10.5" fill="#593C55">Gentle Ferrous Bisglycinate Chelate + Vi...</text>
 
     <!-- Elemental Dose Pill -->
     <rect x="200" y="394" width="200" height="32" rx="6" fill="#F3ECE1" stroke="#DFD2C0"/>

@@ -68,11 +68,11 @@
     <line x1="190" y1="257" x2="410" y2="257" stroke="#E3D7C8" stroke-width="1"/>
 
     <!-- Product Display Name -->
-    <text x="190" y="284" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#261124">Liposomal Vitamin C</text>
-    
+    <text x="190" y="284" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#261124">Liposomal C</text>
+    <text x="190" y="307" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#261124">Vitamin</text>
 
     <!-- Subtitle -->
-    <text x="190" y="307" font-family="system-ui, sans-serif" font-size="10.5" fill="#593C55">Sunflower Lecithin Encapsulated Sodium A...</text>
+    <text x="190" y="327" font-family="system-ui, sans-serif" font-size="10.5" fill="#593C55">Sunflower Lecithin Encapsulated Sodium A...</text>
 
     <!-- Elemental Dose Pill -->
     <rect x="190" y="404" width="220" height="32" rx="6" fill="#F3ECE1" stroke="#DFD2C0"/>

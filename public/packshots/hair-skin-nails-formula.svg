@@ -81,8 +81,8 @@
     <line x1="200" y1="281" x2="400" y2="281" stroke="#E3D7C8" stroke-width="1"/>
 
     <!-- Product Display Name -->
-    <text x="200" y="308" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#261124">Hair, Skin &amp; Nails</text>
-    <text x="200" y="331" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#261124">Formula</text>
+    <text x="200" y="308" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#261124">Hair, Skin &amp;</text>
+    <text x="200" y="331" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#261124">Nails Formula</text>
 
     <!-- Subtitle -->
     <text x="200" y="351" font-family="system-ui, sans-serif" font-size="10.5" fill="#593C55">L-Proline, Vitamin C, Zinc, Copper &amp; Bio...</text>

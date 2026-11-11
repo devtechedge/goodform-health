@@ -67,11 +67,11 @@
     <line x1="210" y1="275" x2="390" y2="275" stroke="#E3D7C8" stroke-width="1"/>
 
     <!-- Product Display Name -->
-    <text x="210" y="302" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#261124">Vegan Algal Omega-3</text>
-    
+    <text x="210" y="302" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#261124">Vegan Algal</text>
+    <text x="210" y="325" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#261124">Omega-3</text>
 
     <!-- Subtitle -->
-    <text x="210" y="325" font-family="system-ui, sans-serif" font-size="10.5" fill="#593C55">Schizochytrium sp. Microalgae DHA &amp; EPA</text>
+    <text x="210" y="345" font-family="system-ui, sans-serif" font-size="10.5" fill="#593C55">Schizochytrium sp. Microalgae DHA &amp; EPA</text>
 
     <!-- Elemental Dose Pill -->
     <rect x="210" y="402" width="180" height="32" rx="6" fill="#F3ECE1" stroke="#DFD2C0"/>

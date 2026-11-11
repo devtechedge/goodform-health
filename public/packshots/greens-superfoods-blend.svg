@@ -67,8 +67,8 @@
     <line x1="176" y1="277" x2="424" y2="277" stroke="#E3D7C8" stroke-width="1"/>
 
     <!-- Product Display Name -->
-    <text x="176" y="304" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#261124">Greens &amp; Superfoods</text>
-    <text x="176" y="327" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#261124">Blend</text>
+    <text x="176" y="304" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#261124">Greens &amp; Blend</text>
+    <text x="176" y="327" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#261124">Superfoods</text>
 
     <!-- Subtitle -->
     <text x="176" y="347" font-family="system-ui, sans-serif" font-size="10.5" fill="#593C55">Moringa, Spirulina, Wheatgrass &amp; Spinach...</text>

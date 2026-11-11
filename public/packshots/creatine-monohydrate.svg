@@ -67,11 +67,11 @@
     <line x1="176" y1="277" x2="424" y2="277" stroke="#E3D7C8" stroke-width="1"/>
 
     <!-- Product Display Name -->
-    <text x="176" y="304" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#261124">Creatine Monohydrate</text>
-    
+    <text x="176" y="304" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#261124">Creatine</text>
+    <text x="176" y="327" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#261124">Monohydrate</text>
 
     <!-- Subtitle -->
-    <text x="176" y="327" font-family="system-ui, sans-serif" font-size="10.5" fill="#593C55">200-Mesh Micronised Unflavoured Monohydr...</text>
+    <text x="176" y="347" font-family="system-ui, sans-serif" font-size="10.5" fill="#593C55">200-Mesh Micronised Unflavoured Monohydr...</text>
 
     <!-- Elemental Dose Pill -->
     <rect x="176" y="394" width="248" height="32" rx="6" fill="#F3ECE1" stroke="#DFD2C0"/>

@@ -73,12 +73,12 @@ function esc(value: string): string {
 }
 
 function wrapTitle(title: string): [string, string?] {
-  if (title.length <= 20) return [title];
+  if (title.length <= 16) return [title];
   const words = title.split(" ");
   let line1 = "";
   let line2 = "";
   for (const w of words) {
-    if ((line1 + " " + w).trim().length <= 19 || line1 === "") {
+    if ((line1 + " " + w).trim().length <= 16 || line1 === "") {
       line1 = (line1 + " " + w).trim();
     } else {
       line2 = (line2 + " " + w).trim();

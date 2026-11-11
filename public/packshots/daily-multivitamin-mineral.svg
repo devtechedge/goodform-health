@@ -81,8 +81,8 @@
     <line x1="200" y1="281" x2="400" y2="281" stroke="#E3D7C8" stroke-width="1"/>
 
     <!-- Product Display Name -->
-    <text x="200" y="308" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#261124">Daily Multivitamin</text>
-    <text x="200" y="331" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#261124">&amp; Mineral</text>
+    <text x="200" y="308" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#261124">Daily &amp; Mineral</text>
+    <text x="200" y="331" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#261124">Multivitamin</text>
 
     <!-- Subtitle -->
     <text x="200" y="351" font-family="system-ui, sans-serif" font-size="10.5" fill="#593C55">21 ICMR-NIN Aligned Micronutrients &amp; Che...</text>
