@@ -25,6 +25,18 @@ export async function generateMetadata({
     title: `${col.name} Collection`,
     description: col.editorialIntro,
     alternates: { canonical: `/collections/${col.slug}` },
+    openGraph: {
+      title: `${col.name} Collection | GOODFORM`,
+      description: col.editorialIntro,
+      images: [
+        {
+          url: "/opengraph-image",
+          width: 1200,
+          height: 630,
+          alt: `${col.name} Collection | GOODFORM`,
+        },
+      ],
+    },
   };
 }
 

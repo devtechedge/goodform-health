@@ -30,6 +30,18 @@ export async function generateMetadata({
     title: article.title,
     description: article.summary,
     alternates: { canonical: `/learn/${article.slug}` },
+    openGraph: {
+      title: `${article.title} | GOODFORM`,
+      description: article.summary,
+      images: [
+        {
+          url: "/opengraph-image",
+          width: 1200,
+          height: 630,
+          alt: article.title,
+        },
+      ],
+    },
   };
 }
 
