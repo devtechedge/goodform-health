@@ -2,6 +2,7 @@ import type { PgliteDatabase } from "drizzle-orm/pglite";
 import { getEnv, getEffectiveAppEnv } from "@/env";
 import * as schema from "./schema";
 import { bootstrapPglite } from "./bootstrap";
+import { normalizePgConnectionString } from "./url";
 
 export type Database = PgliteDatabase<typeof schema>;
 export type Transaction = Parameters<Parameters<Database["transaction"]>[0]>[0];
@@ -29,7 +30,7 @@ async function createPostgresDb(connectionString: string): Promise<Database> {
   const { drizzle } = await import("drizzle-orm/node-postgres");
   const { Pool } = await import("pg");
   const pool = new Pool({
-    connectionString,
+    connectionString: normalizePgConnectionString(connectionString),
     max: 6,
     idleTimeoutMillis: 30_000,
     connectionTimeoutMillis: 10_000,
@@ -83,7 +84,10 @@ export async function createFreshTestDb(): Promise<{
   if (testUrl) {
     const { drizzle } = await import("drizzle-orm/node-postgres");
     const { Pool } = await import("pg");
-    const pool = new Pool({ connectionString: testUrl, max: 4 });
+    const pool = new Pool({
+      connectionString: normalizePgConnectionString(testUrl),
+      max: 4,
+    });
     const db = drizzle(pool, { schema }) as unknown as Database;
     const { seedDatabase } = await import("./seed-runner");
     await seedDatabase(db, { includeDemoAccounts: true, resetExisting: true });

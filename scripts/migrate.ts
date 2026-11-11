@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
 import { Pool } from "pg";
+import { normalizePgConnectionString } from "../src/db/url";
 
 const url = process.env.DATABASE_URL_UNPOOLED ?? process.env.DATABASE_URL;
 if (!url || !url.trim()) {
@@ -16,7 +17,10 @@ const parsed = new URL(url);
 const dbName = parsed.pathname.replace(/^\//, "");
 console.log(`Applying Drizzle migrations to database "${dbName}" on host "${parsed.hostname}"...`);
 
-const pool = new Pool({ connectionString: url, max: 1 });
+const pool = new Pool({
+  connectionString: normalizePgConnectionString(url),
+  max: 1,
+});
 const db = drizzle(pool);
 
 try {
