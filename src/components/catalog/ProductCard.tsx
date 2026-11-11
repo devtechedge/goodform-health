@@ -17,27 +17,21 @@ export interface ProductCardProps {
 }
 
 export function ProductCard({ product, priority = false }: ProductCardProps) {
-  const { addToCart, isBusy } = useCart();
-  const [wishSaved, setWishSaved] = useState(false);
+  const { addToCart, isBusy, isWishlisted, toggleWishlist } = useCart();
   const [wishMsg, setWishMsg] = useState<string | null>(null);
 
+  const wishSaved = isWishlisted(product.id);
   const primaryIngredient = product.ingredientsJson[0];
   const outOfStock = product.totalAvailableStock <= 0;
+  const perServingPaise = Math.round(
+    product.startingPricePaise / Math.max(1, product.servingsPerPack),
+  );
 
   const handleWishlist = async () => {
     setWishMsg(null);
-    const res = await fetch("/api/wishlist", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ productId: product.id }),
-    });
-    if (res.status === 401) {
+    const res = await toggleWishlist(product.id);
+    if (res.requiresAuth) {
       setWishMsg("Sign in to save");
-      return;
-    }
-    if (res.ok) {
-      const data = (await res.json()) as { saved: boolean };
-      setWishSaved(data.saved);
     }
   };
 
@@ -127,8 +121,8 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
           <p className="font-mono-label text-base font-semibold text-[var(--gf-ink)]">
             {formatInrPaise(product.startingPricePaise)}
           </p>
-          <p className="text-[11px] text-[var(--gf-ink-muted)]">
-            {product.servingsPerPack} servings · MRP incl. GST
+          <p className="font-mono-label text-[11px] text-[var(--gf-ink-muted)]">
+            {formatInrPaise(perServingPaise)}/serving · {product.servingsPerPack}d
           </p>
         </div>
 

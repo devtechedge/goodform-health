@@ -56,18 +56,76 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
     pageSize: 12,
   });
 
-  const buildPageHref = (nextPage: number) => {
+  const buildFilterHref = (overrides: {
+    q?: string;
+    collection?: string;
+    diet?: string;
+    form?: string;
+    inStockOnly?: boolean;
+    sort?: string;
+    page?: number;
+  }) => {
+    const nextQ = overrides.q !== undefined ? overrides.q : q;
+    const nextCol =
+      overrides.collection !== undefined ? overrides.collection : collection;
+    const nextDiet = overrides.diet !== undefined ? overrides.diet : diet;
+    const nextForm = overrides.form !== undefined ? overrides.form : form;
+    const nextStock =
+      overrides.inStockOnly !== undefined ? overrides.inStockOnly : inStockOnly;
+    const nextSort = overrides.sort !== undefined ? overrides.sort : sort;
+    const nextPage = overrides.page ?? 1;
+
     const params = new URLSearchParams();
-    if (q) params.set("q", q);
-    if (collection !== "all") params.set("collection", collection);
-    if (diet !== "ALL") params.set("diet", diet);
-    if (form !== "ALL") params.set("form", form);
-    if (inStockOnly) params.set("inStock", "true");
-    if (sort !== "featured") params.set("sort", sort);
+    if (nextQ) params.set("q", nextQ);
+    if (nextCol !== "all") params.set("collection", nextCol);
+    if (nextDiet !== "ALL") params.set("diet", nextDiet);
+    if (nextForm !== "ALL") params.set("form", nextForm);
+    if (nextStock) params.set("inStock", "true");
+    if (nextSort !== "featured") params.set("sort", nextSort);
     if (nextPage > 1) params.set("page", String(nextPage));
     const qs = params.toString();
     return qs ? `/shop?${qs}` : "/shop";
   };
+
+  const buildPageHref = (nextPage: number) => buildFilterHref({ page: nextPage });
+
+  const activeChips: Array<{ label: string; removeHref: string }> = [];
+  if (q) {
+    activeChips.push({
+      label: `Search: "${q}"`,
+      removeHref: buildFilterHref({ q: "" }),
+    });
+  }
+  if (collection !== "all") {
+    activeChips.push({
+      label: `Shelf: ${collection}`,
+      removeHref: buildFilterHref({ collection: "all" }),
+    });
+  }
+  if (diet !== "ALL") {
+    activeChips.push({
+      label: `Diet: ${diet}`,
+      removeHref: buildFilterHref({ diet: "ALL" }),
+    });
+  }
+  if (form !== "ALL") {
+    activeChips.push({
+      label: `Form: ${form.replace("_", " ")}`,
+      removeHref: buildFilterHref({ form: "ALL" }),
+    });
+  }
+  if (inStockOnly) {
+    activeChips.push({
+      label: "In-stock only",
+      removeHref: buildFilterHref({ inStockOnly: false }),
+    });
+  }
+  if (sort !== "featured") {
+    activeChips.push({
+      label: `Sort: ${sort}`,
+      removeHref: buildFilterHref({ sort: "featured" }),
+    });
+  }
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
@@ -233,6 +291,35 @@ export default async function ShopPage({ searchParams }: ShopPageProps) {
           </div>
         </div>
       </form>
+
+      {activeChips.length > 0 ? (
+        <div
+          aria-label="Active filters"
+          data-testid="shop-active-filters"
+          className="mt-4 flex flex-wrap items-center gap-2"
+        >
+          <span className="font-mono-label text-xs text-[var(--gf-ink-muted)]">
+            Active:
+          </span>
+          {activeChips.map((chip) => (
+            <Link
+              key={chip.label}
+              href={chip.removeHref}
+              aria-label={`Remove filter ${chip.label}`}
+              className="inline-flex min-h-8 items-center gap-1.5 rounded-full border border-[var(--gf-lilac-border)] bg-[var(--gf-lilac)] px-3 py-1 text-xs font-semibold text-[var(--gf-lilac-ink)] hover:opacity-90"
+            >
+              <span>{chip.label}</span>
+              <span aria-hidden="true">&times;</span>
+            </Link>
+          ))}
+          <Link
+            href="/shop"
+            className="text-xs font-semibold text-[var(--gf-persimmon-ink)] underline ml-1"
+          >
+            Clear all
+          </Link>
+        </div>
+      ) : null}
 
       {result.items.length > 0 ? (
         <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

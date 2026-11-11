@@ -19,12 +19,17 @@ export function ProductPurchasePanel({
   productName,
   variants,
 }: ProductPurchasePanelProps) {
-  const { addToCart, isBusy } = useCart();
+  const {
+    addToCart,
+    isBusy,
+    isWishlisted,
+    toggleWishlist: toggleWishlistCtx,
+  } = useCart();
   const [selectedId, setSelectedId] = useState(variants[0]?.id ?? "");
   const [qty, setQty] = useState(1);
-  const [wishSaved, setWishSaved] = useState(false);
   const [wishNote, setWishNote] = useState<string | null>(null);
 
+  const wishSaved = isWishlisted(productId);
   const selected =
     variants.find((v) => v.id === selectedId) ?? variants[0] ?? null;
 
@@ -32,6 +37,12 @@ export function ProductPurchasePanel({
     return null;
   }
 
+  const basePerServingPaise = Math.max(
+    1,
+    ...variants.map((v) =>
+      Math.round(v.pricePaise / Math.max(1, v.servingsCount)),
+    ),
+  );
   const perServingPaise = Math.round(
     selected.pricePaise / Math.max(1, selected.servingsCount),
   );
@@ -39,19 +50,13 @@ export function ProductPurchasePanel({
 
   const toggleWishlist = async () => {
     setWishNote(null);
-    const res = await fetch("/api/wishlist", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ productId }),
-    });
-    if (res.status === 401) {
+    const res = await toggleWishlistCtx(productId);
+    if (res.requiresAuth) {
       setWishNote("Sign in required to save to wishlist.");
       return;
     }
     if (res.ok) {
-      const data = (await res.json()) as { saved: boolean };
-      setWishSaved(data.saved);
-      setWishNote(data.saved ? "Saved to your wishlist." : "Removed from wishlist.");
+      setWishNote(res.saved ? "Saved to your wishlist." : "Removed from wishlist.");
     }
   };
 
@@ -65,6 +70,17 @@ export function ProductPurchasePanel({
           <div className="mt-2.5 grid gap-2.5 sm:grid-cols-2">
             {variants.map((v) => {
               const active = v.id === selected.id;
+              const vPerServing = Math.round(
+                v.pricePaise / Math.max(1, v.servingsCount),
+              );
+              const savingsPct =
+                basePerServingPaise > vPerServing
+                  ? Math.round(
+                      ((basePerServingPaise - vPerServing) /
+                        basePerServingPaise) *
+                        100,
+                    )
+                  : 0;
               return (
                 <button
                   key={v.id}
@@ -80,15 +96,19 @@ export function ProductPurchasePanel({
                       : "border-[var(--gf-border)] bg-[var(--gf-bg)] hover:border-[var(--gf-border-strong)]"
                   }`}
                 >
-                  <p className="font-semibold text-sm text-[var(--gf-ink)]">
-                    {v.title}
-                  </p>
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="font-semibold text-sm text-[var(--gf-ink)]">
+                      {v.title}
+                    </p>
+                    {savingsPct > 0 ? (
+                      <span className="rounded-full bg-[var(--gf-verbena-soft)] px-2 py-0.5 font-mono-label text-[10px] font-semibold text-[var(--gf-verbena-ink)]">
+                        {savingsPct}% lower/serving
+                      </span>
+                    ) : null}
+                  </div>
                   <p className="mt-1 font-mono-label text-xs text-[var(--gf-ink-muted)]">
                     {formatInrPaise(v.pricePaise)} ·{" "}
-                    {formatInrPaise(
-                      Math.round(v.pricePaise / Math.max(1, v.servingsCount)),
-                    )}
-                    /serving
+                    {formatInrPaise(vPerServing)}/serving
                   </p>
                 </button>
               );
